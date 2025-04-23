@@ -46,7 +46,7 @@
       background: #444;
       font-size: 1.5rem;
       font-weight: bold;
-      color: #ccc; /* Серый цвет цифр */
+      color: #5e5e5e; /* Серый цвет цифр */
       border-radius: 5px;
       box-sizing: border-box;
       overflow: hidden;
@@ -70,12 +70,28 @@
       font-size: 1.2rem;
       color: #ccc;
     }
+      button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      background: #444;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #666;
+    }
   </style>
 </head>
 <body>
   <h1>2048</h1>
   <div class="score">Счёт: <span id="score">0</span></div>
   <div id="game-container"></div>
+  
+  <button onclick="init()" style="margin-top: 1rem;">Новая игра</button>
+  
   <div class="controls">
     <p>Используй стрелки, кнопки или свайпы для перемещения плиток</p>
   </div>
@@ -93,7 +109,22 @@
       addRandomTile();
       drawGrid();
     }
-
+    function isGameOver() {
+      return !grid.includes(0) && !canMerge();
+    }
+    
+    function canMerge() {
+      for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+          const current = grid[i * gridSize + j];
+          const right = j < gridSize - 1 ? grid[i * gridSize + j + 1] : 0;
+          const down = i < gridSize - 1 ? grid[(i + 1) * gridSize + j] : 0;
+          if (current === right || current === down) return true;
+        }
+      }
+      return false;
+    }
+    
     function updateScore() {
       document.getElementById('score').textContent = score;
     }
@@ -172,7 +203,9 @@
       updateScore();
       drawGrid();
     }
-
+    if (isGameOver()) {
+      setTimeout(() => alert('Игра окончена!'), 100);
+    }
     window.addEventListener('keydown', e => {
       const keys = {
         ArrowLeft: 'left',
