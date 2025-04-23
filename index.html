@@ -13,26 +13,30 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       min-height: 100vh;
-      padding: 2rem;
+      padding: 1rem;
     }
     h1 {
       margin-bottom: 1rem;
       color: #fff;
+      font-size: 2rem;
     }
     #game-container {
       background: #222;
       padding: 1rem;
       border-radius: 10px;
       display: grid;
-      grid-template-columns: repeat(4, 80px);
+      grid-template-columns: repeat(4, 1fr);
       grid-gap: 10px;
-      touch-action: none;
+      width: 280px;
+      height: 280px;
+      max-width: 100%;
+      max-height: 100%;
     }
     .tile {
-      width: 80px;
-      height: 80px;
+      width: 100%;
+      height: 100%;
       background: #444;
       font-size: 24px;
       font-weight: bold;
@@ -45,11 +49,33 @@
     .controls {
       margin-top: 1rem;
       color: #ccc;
+      text-align: center;
     }
     .score {
       margin-top: 1rem;
       font-size: 1.2rem;
       color: #ccc;
+    }
+    .game-over {
+      display: none;
+      text-align: center;
+      color: #fff;
+    }
+    .game-over p {
+      font-size: 1.5rem;
+      margin: 0.5rem 0;
+    }
+    .game-over button {
+      padding: 0.5rem 1rem;
+      background-color: #4e54c8;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .game-over button:hover {
+      background-color: #8f94fb;
     }
   </style>
 </head>
@@ -60,19 +86,27 @@
   <div class="controls">
     <p>Используй стрелки, кнопки или свайпы для перемещения плиток</p>
   </div>
+  <div class="game-over">
+    <p>Игра завершена!</p>
+    <p>Ваш счёт: <span id="final-score"></span></p>
+    <button onclick="restartGame()">Играть снова</button>
+  </div>
 
   <script>
     const gridSize = 4;
     let grid = [];
     let score = 0;
+    let isGameOver = false;
 
     function init() {
       grid = Array(gridSize * gridSize).fill(0);
       score = 0;
+      isGameOver = false;
       updateScore();
       addRandomTile();
       addRandomTile();
       drawGrid();
+      document.querySelector('.game-over').style.display = 'none'; // Hide game over screen
     }
 
     function updateScore() {
@@ -117,6 +151,8 @@
     }
 
     function move(dir) {
+      if (isGameOver) return;
+
       const newGrid = Array(gridSize).fill().map(() => Array(gridSize).fill(0));
       for (let i = 0; i < gridSize; i++) {
         let row = [];
@@ -152,6 +188,29 @@
       addRandomTile();
       updateScore();
       drawGrid();
+
+      if (isGameOverCondition()) {
+        isGameOver = true;
+        document.querySelector('.game-over').style.display = 'block';
+        document.getElementById('final-score').textContent = score;
+      }
+    }
+
+    function isGameOverCondition() {
+      // Check if there are no more moves
+      for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+          const current = grid[i * gridSize + j];
+          if (current === 0) return false;
+          if (j < gridSize - 1 && current === grid[i * gridSize + (j + 1)]) return false;
+          if (i < gridSize - 1 && current === grid[(i + 1) * gridSize + j]) return false;
+        }
+      }
+      return true;
+    }
+
+    function restartGame() {
+      init();
     }
 
     window.addEventListener('keydown', e => {
