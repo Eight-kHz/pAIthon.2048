@@ -8,7 +8,7 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #4e54c8, #8f94fb);
+      background: #000;
       color: #fff;
       display: flex;
       flex-direction: column;
@@ -19,22 +19,24 @@
     }
     h1 {
       margin-bottom: 1rem;
+      color: #fff;
     }
     #game-container {
-      background: #bbada0;
+      background: #222;
       padding: 1rem;
       border-radius: 10px;
       display: grid;
       grid-template-columns: repeat(4, 80px);
       grid-gap: 10px;
+      touch-action: none;
     }
     .tile {
       width: 80px;
       height: 80px;
-      background: #cdc1b4;
+      background: #444;
       font-size: 24px;
       font-weight: bold;
-      color: #776e65;
+      color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -42,10 +44,12 @@
     }
     .controls {
       margin-top: 1rem;
+      color: #ccc;
     }
     .score {
       margin-top: 1rem;
       font-size: 1.2rem;
+      color: #ccc;
     }
   </style>
 </head>
@@ -54,7 +58,7 @@
   <div class="score">Счёт: <span id="score">0</span></div>
   <div id="game-container"></div>
   <div class="controls">
-    <p>Используй стрелки на клавиатуре для перемещения плиток</p>
+    <p>Используй стрелки, кнопки или свайпы для перемещения плиток</p>
   </div>
 
   <script>
@@ -89,7 +93,7 @@
 
     function getTileColor(value) {
       const colors = {
-        0: '#cdc1b4',
+        0: '#444',
         2: '#eee4da',
         4: '#ede0c8',
         8: '#f2b179',
@@ -159,6 +163,28 @@
       };
       if (keys[e.key]) {
         move(keys[e.key]);
+      }
+    });
+
+    // Touch support
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    window.addEventListener('touchstart', e => {
+      const touch = e.touches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+    });
+
+    window.addEventListener('touchend', e => {
+      const touch = e.changedTouches[0];
+      const dx = touch.clientX - touchStartX;
+      const dy = touch.clientY - touchStartY;
+
+      if (Math.abs(dx) > Math.abs(dy)) {
+        move(dx > 0 ? 'right' : 'left');
+      } else {
+        move(dy > 0 ? 'down' : 'up');
       }
     });
 
