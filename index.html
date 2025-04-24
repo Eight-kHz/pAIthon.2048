@@ -206,22 +206,22 @@
       return !grid.includes(0) && !canMerge();
     }
       // Функция для отправки рекорда в Telegram
-  function shareScore() {
-      console.log("Нажата кнопка «Поделиться»");
-      console.log("Telegram объект:", Telegram);
-
-      if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
-        const payload = {
-          type: "2048",
-          score: record
-        };
-        Telegram.WebApp.sendData(JSON.stringify(payload));
-        console.log("Данные отправлены:", payload);
-      } else {
-        alert("Открой игру через Telegram, чтобы поделиться рекордом!");
-        console.warn("Telegram WebApp не найден");
-      }
+    function shareScore() {
+    console.log("Нажата кнопка «Поделиться»");
+    console.log("Telegram объект:", window.Telegram);
+  
+    if (typeof window.Telegram !== 'undefined' && window.Telegram.WebApp) {
+      const payload = {
+        type: "2048",
+        score: record
+      };
+      window.Telegram.WebApp.sendData(JSON.stringify(payload));
+      console.log("Данные отправлены:", payload);
+    } else {
+      console.warn("Telegram WebApp не найден");
+      alert("Открой игру через Telegram, чтобы поделиться рекордом!");
     }
+  }
   function updateFontSize() {
   const scoreElement = document.getElementById('score');
   const recordElement = document.getElementById('record');
@@ -404,13 +404,11 @@ function mergeRow(row) {
     ArrowDown: 'down'
   };
 
-  // Проверяем, что нажата клавиша в допустимом диапазоне
   if (keys[e.key]) {
     move(keys[e.key]);
   }
 });
 
-    // Touch support
     let touchStartX = 0;
     let touchStartY = 0;
 
