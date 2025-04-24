@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>pAIthon | 2048</title>
@@ -211,11 +213,9 @@
     console.log("Telegram объект:", window.Telegram);
   
     if (typeof window.Telegram !== 'undefined' && window.Telegram.WebApp) {
-      const payload = {
-        type: "2048",
-        score: record
-      };
-      window.Telegram.WebApp.sendData(JSON.stringify(payload));
+      Telegram.WebApp.ready();
+      const payload = JSON.stringify({type: "2048", score: record});
+      Telegram.WebApp.sendData(payload);
       console.log("Данные отправлены:", payload);
     } else {
       console.warn("Telegram WebApp не найден");
