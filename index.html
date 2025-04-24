@@ -83,6 +83,21 @@
     button:hover {
       background: #666;
     }
+    #game-over-overlay {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      font-size: 2rem;
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      display: none;
+      z-index: 10;
+      pointer-events: none;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -203,6 +218,9 @@
       updateScore();
       drawGrid();
     }
+        if (isGameOver()) {
+      document.getElementById('game-over-overlay').style.display = 'block';
+    }
     if (isGameOver()) {
       setTimeout(() => alert('Игра окончена!'), 100);
     }
@@ -265,7 +283,10 @@
       }
     });
     
+    document.getElementById('game-over-overlay').style.display = 'none';
+
     init();
   </script>
+  <div id="game-over-overlay">Игра окончена</div>
 </body>
 </html>
