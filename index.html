@@ -230,19 +230,12 @@
   // Функция обновления рекорда
   function updateScore() {
   document.getElementById('score').textContent = score;
-
-  // Загружаем рекорд из localStorage только при первом вызове
-  if (record === 0 && localStorage.getItem('record')) {
-    record = parseInt(localStorage.getItem('record'));
-  }
-
   if (score > record) {
     record = score;
-    localStorage.setItem('record', record);
   }
-
   document.getElementById('record').textContent = record;
 }
+
     function canMerge() {
       for (let i = 0; i < gridSize; i++) {
         for (let j = 0; j < gridSize; j++) {
@@ -255,7 +248,11 @@
       return false;
     }
     
-
+function sendScoreToBot() {
+  if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+    Telegram.WebApp.sendData(JSON.stringify({ type: '2048', score: record }));
+  }
+}
 
     function drawGrid() {
   const container = document.getElementById('game-container');
@@ -339,6 +336,7 @@
     
       if (isGameOver()) {
         document.getElementById('game-over-overlay').style.display = 'block';
+        sendScoreToBot();
       }
     }
     window.addEventListener('keydown', e => {
@@ -423,12 +421,9 @@
     };
     document.querySelector('.restart-button').addEventListener('click', init);
 
-  document.addEventListener('click', () => {
-    const overlay = document.getElementById('game-over-overlay');
-    if (overlay.style.display === 'block') {
-      init();
-    }
-  });
+  document.getElementById('game-over-overlay').addEventListener('click', () => {
+  init();
+});
   </script>
   <div id="game-over-overlay">Игра окончена</div>
 </body>
