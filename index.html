@@ -211,16 +211,16 @@
     console.log("Telegram объект:", window.Telegram);
   
     if (typeof window.Telegram !== 'undefined' && window.Telegram.WebApp) {
-    window.Telegram.WebApp.ready();  // Убедитесь, что WebApp готов
-    const payload = {
-      type: "2048",
-      score: record
-    };
-    window.Telegram.WebApp.sendData(JSON.stringify(payload));
-    console.log("Данные отправлены:", payload);
-  } else {
-    console.warn("Telegram WebApp не найден");
-    alert("Открой игру через Telegram, чтобы поделиться рекордом!");
+      const payload = {
+        type: "2048",
+        score: record
+      };
+      window.Telegram.WebApp.sendData(JSON.stringify(payload));
+      console.log("Данные отправлены:", payload);
+    } else {
+      console.warn("Telegram WebApp не найден");
+      alert("Открой игру через Telegram, чтобы поделиться рекордом!");
+    }
   }
   function updateFontSize() {
   const scoreElement = document.getElementById('score');
@@ -474,6 +474,11 @@ function mergeRow(row) {
     });
 
     window.onload = () => {
+      if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.ready();  // Убедитесь, что WebApp готов
+      }
+    
+      // Инициализация вашей игры
       init(); 
       updateFontSize();
     };
