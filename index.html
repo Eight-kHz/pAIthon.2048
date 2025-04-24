@@ -115,7 +115,20 @@
 .restart-button:hover {
   background-color: #666; /* Эффект наведения */
 }
+#score-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 1rem; /* Отступ от игрового поля */
+}
 
+.score, .record {
+  margin: 0 1rem;
+  font-size: 1.5rem;
+  color: #ccc;
+  font-weight: bold;
+  text-align: center; /* Центрирование текста */
+}
       button {
       margin-top: 1rem;
       padding: 0.5rem 1rem;
@@ -147,8 +160,11 @@
   </style>
 </head>
 <body>
-  <h1>2048</h1>
+  <h1>pAIthon | 2048</h1>
+  <div id="score-container">
   <div class="score">Счёт: <span id="score">0</span></div>
+  <div class="record">Рекорд: <span id="record">0</span></div>
+</div>
   <div id="game-container"></div>
   
   <button onclick="init()" class="restart-button"></button>
@@ -159,6 +175,7 @@
     const gridSize = 4;
     let grid = [];
     let score = 0;
+    let record = localStorage.getItem('record') ? parseInt(localStorage.getItem('record')) : 0;
 
     function init() {
       document.getElementById('game-over-overlay').style.display = 'none';
@@ -185,9 +202,16 @@
       return false;
     }
     
-    function updateScore() {
-      document.getElementById('score').textContent = score;
-    }
+   function updateScore() {
+  document.getElementById('score').textContent = score; // Обновление текущего счёта
+  if (score > record) {
+    record = score;
+    localStorage.setItem('record', record); // Сохраняем рекорд в localStorage
+    console.log("Новый рекорд:", record); // Логируем новый рекорд в консоль
+    document.getElementById('record').textContent = record; // Обновление рекорда на экране
+  }  
+}
+
 
     function drawGrid() {
   const container = document.getElementById('game-container');
@@ -353,6 +377,8 @@
     window.onload = () => {
       init();
     };
+    document.querySelector('.restart-button').addEventListener('click', init);
+
   document.addEventListener('click', () => {
     const overlay = document.getElementById('game-over-overlay');
     if (overlay.style.display === 'block') {
