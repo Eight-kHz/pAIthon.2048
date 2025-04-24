@@ -40,21 +40,50 @@
     }
 
     .tile {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      height: auto;
-      font-size: 2rem;
-      font-weight: bold;
-      color: #333;
-      border-radius: 8px;
-      box-sizing: border-box;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s, color 0.2s;
-    }
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  height: auto;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  border-radius: 8px;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+  opacity: 0;  /* Изначально плитка невидимая */
+  transform: scale(0);  /* Начальный масштаб плитки */
+  animation: tile-appear 0.3s forwards;  /* Анимация появления */
+}
+
+@keyframes tile-appear {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.tile.merged {
+  animation: tile-merge 0.3s forwards;
+}
+
+@keyframes tile-merge {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);  /* Увеличиваем плитку в середине анимации */
+  }
+  100% {
+    transform: scale(1);
+  }
+}
     
     .tile[data-value="2"],
     .tile[data-value="4"] {
@@ -203,46 +232,57 @@
     }
 
     function move(dir) {
-      const newGrid = Array(gridSize).fill().map(() => Array(gridSize).fill(0));
-      for (let i = 0; i < gridSize; i++) {
-        let row = [];
-        for (let j = 0; j < gridSize; j++) {
-          let val;
-          if (dir === 'left') val = grid[i * gridSize + j];
-          if (dir === 'right') val = grid[i * gridSize + (gridSize - 1 - j)];
-          if (dir === 'up') val = grid[j * gridSize + i];
-          if (dir === 'down') val = grid[(gridSize - 1 - j) * gridSize + i];
-          if (val !== 0) row.push(val);
-        }
+  const newGrid = Array(gridSize).fill().map(() => Array(gridSize).fill(0));
+  const merged = Array(gridSize).fill().map(() => Array(gridSize).fill(false)); // Массив для отслеживания слитых плиток
 
-        for (let k = 0; k < row.length - 1; k++) {
-          if (row[k] === row[k + 1]) {
-            row[k] *= 2;
-            score += row[k];
-            row.splice(k + 1, 1);
-          }
-        }
+  for (let i = 0; i < gridSize; i++) {
+    let row = [];
+    for (let j = 0; j < gridSize; j++) {
+      let val;
+      if (dir === 'left') val = grid[i * gridSize + j];
+      if (dir === 'right') val = grid[i * gridSize + (gridSize - 1 - j)];
+      if (dir === 'up') val = grid[j * gridSize + i];
+      if (dir === 'down') val = grid[(gridSize - 1 - j) * gridSize + i];
+      if (val !== 0) row.push(val);
+    }
 
-        while (row.length < gridSize) row.push(0);
-
-        for (let j = 0; j < gridSize; j++) {
-          let val = row[j];
-          if (dir === 'left') newGrid[i][j] = val;
-          if (dir === 'right') newGrid[i][gridSize - 1 - j] = val;
-          if (dir === 'up') newGrid[j][i] = val;
-          if (dir === 'down') newGrid[gridSize - 1 - j][i] = val;
-        }
-      }
-
-      grid = newGrid.flat();
-      addRandomTile();
-      updateScore();
-      drawGrid();
-    
-      if (isGameOver()) {
-        document.getElementById('game-over-overlay').style.display = 'block';
+    for (let k = 0; k < row.length - 1; k++) {
+      if (row[k] === row[k + 1]) {
+        row[k] *= 2;
+        score += row[k];
+        row.splice(k + 1, 1);
+        merged[i][k] = true;  // Отмечаем, что плитки были слиты
       }
     }
+
+    while (row.length < gridSize) row.push(0);
+
+    for (let j = 0; j < gridSize; j++) {
+      let val = row[j];
+      if (dir === 'left') newGrid[i][j] = val;
+      if (dir === 'right') newGrid[i][gridSize - 1 - j] = val;
+      if (dir === 'up') newGrid[j][i] = val;
+      if (dir === 'down') newGrid[gridSize - 1 - j][i] = val;
+    }
+  }
+
+  grid = newGrid.flat();
+  addRandomTile();
+  updateScore();
+  drawGrid();
+
+  // Применение анимации слияния
+  grid.forEach((value, index) => {
+    if (value !== 0 && merged[Math.floor(index / gridSize)][index % gridSize]) {
+      document.querySelectorAll('.tile')[index].classList.add('merged');
+    }
+  });
+
+  if (isGameOver()) {
+    document.getElementById('game-over-overlay').style.display = 'block';
+  }
+}
+
     window.addEventListener('keydown', e => {
       const keys = {
         ArrowLeft: 'left',
