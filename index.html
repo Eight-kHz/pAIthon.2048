@@ -278,17 +278,28 @@
     let mouseStartX = 0;
     let mouseStartY = 0;
     let isDragging = false;
-
+    
     const minSwipeDistance = 10; // Минимальное расстояние для свайпа
-
+    
     window.addEventListener('mousedown', e => {
       mouseStartX = e.clientX;
       mouseStartY = e.clientY;
       isDragging = false;  // Обнуляем флаг
     });
-
+    
+    window.addEventListener('mousemove', e => {
+      if (isDragging) return;  // Если уже перетаскиваем, не обрабатываем события
+      const dx = e.clientX - mouseStartX;
+      const dy = e.clientY - mouseStartY;
+    
+      // Если перемещение достаточно велико, устанавливаем флаг
+      if (Math.abs(dx) > minSwipeDistance || Math.abs(dy) > minSwipeDistance) {
+        isDragging = true;
+      }
+    });
+    
     window.addEventListener('mouseup', e => {
-      if (!isDragging) return;
+      if (!isDragging) return; // Если свайп не был выполнен, не обрабатываем
       const dx = e.clientX - mouseStartX;
       const dy = e.clientY - mouseStartY;
     
