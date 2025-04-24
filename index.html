@@ -170,6 +170,7 @@
         tile.className = 'tile';
         tile.setAttribute('data-value', value > 0 ? value : '');
         tile.style.background = getTileColor(value);
+        tile.textContent = value > 0 ? value : ''; // <-- вот это добавь
         container.appendChild(tile);
       });
     }
