@@ -229,21 +229,26 @@
       const { user, m_id, record, payload } = getParamsFromURL();
       // Отправка данных на сервер через POST-запрос
       fetch('https://mygame2048.loca.lt/game_score', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log("Ответ сервера:", data);
-        alert("Рекорд успешно отправлен на сервер!");
-      })
-      .catch((error) => {
-        console.error("Ошибка при отправке рекорда:", error);
-        alert("Не удалось отправить рекорд на сервер.");
-      });
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            console.log("Ответ сервера:", data);
+            alert("Рекорд успешно отправлен на сервер!");
+          } else {
+            console.error("Ошибка при отправке рекорда:", data);
+            alert("Ошибка при отправке рекорда на сервер.");
+          }
+        })
+        .catch((error) => {
+          console.error("Ошибка при отправке рекорда:", error);
+          alert("Не удалось отправить рекорд на сервер.");
+        });
     }
       // Функция для отправки рекорда в Telegram
     function shareScore() {
@@ -251,21 +256,26 @@
       const { user, m_id, record, payload } = getParamsFromURL();
       // Отправка данных на сервер через POST-запрос
       fetch('https://mygame2048.loca.lt/game_score', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log("Ответ сервера:", data);
-        alert("Рекорд успешно отправлен на сервер!");
-      })
-      .catch((error) => {
-        console.error("Ошибка при отправке рекорда:", error);
-        alert("Не удалось отправить рекорд на сервер.");
-      });
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            console.log("Ответ сервера:", data);
+            alert("Рекорд успешно отправлен на сервер!");
+          } else {
+            console.error("Ошибка при отправке рекорда:", data);
+            alert("Ошибка при отправке рекорда на сервер.");
+          }
+        })
+        .catch((error) => {
+          console.error("Ошибка при отправке рекорда:", error);
+          alert("Не удалось отправить рекорд на сервер.");
+        });
     }
       
       
