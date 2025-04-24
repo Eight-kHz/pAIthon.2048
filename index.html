@@ -207,11 +207,13 @@
       document.getElementById('game-over-overlay').style.display = 'none';
       grid = Array(gridSize * gridSize).fill(0);
       score = 0;
+      document.getElementById('record').textContent = record; // <--- вот эта строка
       updateScore();
       addRandomTile();
       addRandomTile();
       drawGrid();
     }
+
     function isGameOver() {
       return !grid.includes(0) && !canMerge();
     }
@@ -411,6 +413,7 @@
     });
 
     window.onload = () => {
+      document.getElementById('record').textContent = record;
       init();
     };
     document.querySelector('.restart-button').addEventListener('click', init);
