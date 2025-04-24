@@ -474,11 +474,6 @@ function mergeRow(row) {
     });
 
     window.onload = () => {
-      if (window.Telegram && window.Telegram.WebApp) {
-        window.Telegram.WebApp.ready();  // Убедитесь, что WebApp готов
-      }
-    
-      // Инициализация вашей игры
       init(); 
       updateFontSize();
     };
