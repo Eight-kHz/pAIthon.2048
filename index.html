@@ -512,10 +512,10 @@ function mergeRow(row) {
     });
 
     window.onload = () => {
-      const { user, m_id, record } = getParamsFromURL();
-      // Инициализация вашей игры
       init(); 
       updateFontSize();
+      const { user, m_id, record } = getParamsFromURL();
+      // Инициализация вашей игры
       if (record > 0) {
         document.getElementById('record').textContent = record;
       }
