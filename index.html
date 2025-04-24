@@ -88,13 +88,13 @@
       font-size: 1.2rem;
       color: #ccc;
     }
-    .restart-button {
-  width: 100%; /* Ширина кнопки равна ширине игрового поля */
-  max-width: 350px; /* Максимальная ширина кнопки, соответствующая ширине поля */
-  height: 60px; /* Увеличена высота кнопки для удобства */
+   .restart-button, .share-button {
+  width: 100%;
+  max-width: 350px; /* Максимальная ширина кнопки */
+  height: 45px; /* Уменьшаем высоту кнопки */
   background-color: #444;
   color: white;
-  font-size: 2rem; /* Увеличен размер стрелки */
+  font-size: 1.5rem; /* Уменьшаем размер текста */
   font-weight: bold;
   border: none;
   border-radius: 10px;
@@ -106,13 +106,15 @@
   margin-top: 1rem;
 }
 
-.restart-button::before {
-  content: '⟳'; /* Стрелка */
-  color: white;
-  font-size: 2rem; /* Увеличен размер стрелки */
+.share-button::before {
+  font-size: 1.5rem; /* Уменьшаем размер стрелки */
 }
 
-.restart-button:hover {
+.restart-button::before {
+  content: '⟳'; /* Стрелка */
+  font-size: 1.5rem; /* Уменьшаем размер стрелки */
+}
+.restart-button:hover, .share-button:hover {
   background-color: #666; /* Эффект наведения */
 }
 #score-container {
@@ -157,27 +159,6 @@
       pointer-events: none;
       text-align: center;
     }
-    .share-button {
-    width: 100%;
-    max-width: 350px;
-    height: 60px;
-    background-color: #444;
-    color: white;
-    font-size: 1.2rem; /* Уменьшен размер шрифта */
-    font-weight: bold;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: background-color 0.3s ease;
-    margin-top: 1rem;
-  }
-
-  .share-button:hover {
-    background-color: #666;
-  }
     
   </style>
 </head>
@@ -194,7 +175,7 @@
 <!-- Подключаем библиотеку для работы с играми Telegram -->
 <script src="https://telegram.org/js/games.js"></script>
 
-<!-- <button onclick="shareScore()" class="share-button">Поделиться рекордом</button> -->
+ <button onclick="shareScore()" class="share-button">Поделиться рекордом</button> 
 
   
   <script>
