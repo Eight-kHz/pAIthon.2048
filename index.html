@@ -216,8 +216,8 @@
         user: user,
         m_id: m_id
       };
-        
-      return { user, m_id, record, payload: { type: "2048", score: record, user: user, m_id: m_id } };
+      console.log(payload); // Check the payload before sending it
+      return { user, m_id, record, payload };
     }
       
     function isGameOver() {
@@ -234,6 +234,7 @@
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(payload),
+          mode: 'no-cors',
         })
         .then(response => response.json())
         .then(data => {
@@ -261,6 +262,7 @@
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(payload),
+          mode: 'no-cors',
         })
         .then(response => response.json())
         .then(data => {
