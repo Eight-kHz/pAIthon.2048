@@ -204,21 +204,23 @@
     }
       
     function getParamsFromURL() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const user = decodeURIComponent(atob(urlParams.get('user')));
-      const m_id = decodeURIComponent(atob(urlParams.get('m_id')));
-      const record = parseInt(decodeURIComponent(atob(urlParams.get('record'))), 10);
-      
-      // Подготовка данных для отправки на сервер
-      const payload = {
+    const urlParams = new URLSearchParams(window.location.search);
+    const user = decodeURIComponent(atob(urlParams.get('user')));
+    const m_id = decodeURIComponent(atob(urlParams.get('m_id')));
+    const record = parseInt(decodeURIComponent(atob(urlParams.get('record'))), 10);
+
+    console.log(user, m_id, record);
+
+    const payload = {
         type: "2048",
         score: record,
         user: user,
         m_id: m_id
-      };
-      console.log(payload); // Check the payload before sending it
-      return { user, m_id, record, payload };
-    }
+    };
+    
+    console.log(payload); // Check the payload before sending it
+    return { user, m_id, record, payload };
+}
       
     function isGameOver() {
       return !grid.includes(0) && !canMerge();
@@ -229,26 +231,26 @@
       const { user, m_id, record, payload } = getParamsFromURL();
       // Отправка данных на сервер через POST-запрос
       fetch('https://mygame2048.loca.lt/game_score', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
-          mode: 'no-cors',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+            mode: 'cors',  // изменено на 'cors'
         })
-        .then(response => response.json())
+        .then(response => response.json())  // теперь можно работать с JSON
         .then(data => {
-          if (data.success === true) {
-            console.log("Ответ сервера:", data);
-            alert("Рекорд успешно отправлен на сервер!");
-          } else {
-            console.error("Ошибка при отправке рекорда:", data);
-            alert("Ошибка при отправке рекорда на сервер.");
-          }
+            console.log("Server response:", data);  // логируем ответ от сервера
+            if (data.success) {
+                alert("Рекорд успешно отправлен на сервер!");
+            } else {
+                console.error("Ошибка при отправке рекорда:", data);
+                alert("Ошибка при отправке рекорда на сервер.");
+            }
         })
         .catch((error) => {
-          console.error("Ошибка при отправке рекорда:", error);
-          alert("Не удалось отправить рекорд на сервер.");
+            console.error("Ошибка при отправке рекорда:", error);
+            alert("Не удалось отправить рекорд на сервер.");
         });
     }
       // Функция для отправки рекорда в Telegram
@@ -257,26 +259,26 @@
       const { user, m_id, record, payload } = getParamsFromURL();
       // Отправка данных на сервер через POST-запрос
       fetch('https://mygame2048.loca.lt/game_score', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
-          mode: 'no-cors',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+            mode: 'cors',  // изменено на 'cors'
         })
-        .then(response => response.json())
+        .then(response => response.json())  // теперь можно работать с JSON
         .then(data => {
-          if (data.success === true) {
-            console.log("Ответ сервера:", data);
-            alert("Рекорд успешно отправлен на сервер!");
-          } else {
-            console.error("Ошибка при отправке рекорда:", data);
-            alert("Ошибка при отправке рекорда на сервер.");
-          }
+            console.log("Server response:", data);  // логируем ответ от сервера
+            if (data.success) {
+                alert("Рекорд успешно отправлен на сервер!");
+            } else {
+                console.error("Ошибка при отправке рекорда:", data);
+                alert("Ошибка при отправке рекорда на сервер.");
+            }
         })
         .catch((error) => {
-          console.error("Ошибка при отправке рекорда:", error);
-          alert("Не удалось отправить рекорд на сервер.");
+            console.error("Ошибка при отправке рекорда:", error);
+            alert("Не удалось отправить рекорд на сервер.");
         });
     }
       
