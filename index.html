@@ -226,6 +226,7 @@
     
     function sendScoreToBot() {
     
+      const { user, m_id, record, payload } = getParamsFromURL();
       // Отправка данных на сервер через POST-запрос
       fetch('https://mygame2048.loca.lt/game_score', {
         method: 'POST',
@@ -247,6 +248,7 @@
       // Функция для отправки рекорда в Telegram
     function shareScore() {
       console.log("Нажата кнопка «Поделиться»");
+      const { user, m_id, record, payload } = getParamsFromURL();
       // Отправка данных на сервер через POST-запрос
       fetch('https://mygame2048.loca.lt/game_score', {
         method: 'POST',
@@ -515,7 +517,7 @@ function mergeRow(row) {
     window.onload = () => {
       init(); 
       updateFontSize();
-      const { user, m_id, record } = getParamsFromURL();
+      const { user, m_id, record, payload } = getParamsFromURL();
       // Инициализация вашей игры
       if (record > 0) {
         document.getElementById('record').textContent = record;
