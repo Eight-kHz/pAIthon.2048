@@ -117,6 +117,7 @@
     let score = 0;
 
     function init() {
+      document.getElementById('game-over-overlay').style.display = 'none';
       grid = Array(gridSize * gridSize).fill(0);
       score = 0;
       updateScore();
@@ -217,12 +218,11 @@
       addRandomTile();
       updateScore();
       drawGrid();
-    }
-        if (isGameOver()) {
-      document.getElementById('game-over-overlay').style.display = 'block';
-    }
-    if (isGameOver()) {
-      setTimeout(() => alert('Игра окончена!'), 100);
+    
+      if (isGameOver()) {
+        document.getElementById('game-over-overlay').style.display = 'block';
+        setTimeout(() => alert('Игра окончена!'), 100);
+      }
     }
     window.addEventListener('keydown', e => {
       const keys = {
@@ -282,8 +282,6 @@
         move(dy > 0 ? 'down' : 'up');
       }
     });
-    
-    document.getElementById('game-over-overlay').style.display = 'none';
 
     init();
   </script>
