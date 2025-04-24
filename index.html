@@ -181,7 +181,7 @@
 <!-- Подключаем библиотеку для работы с играми Telegram -->
 <script src="https://telegram.org/js/games.js"></script>
 
- <button onclick="shareScore()" class="share-button"><i class="fas fa-share-alt"></i> Поделиться рекордом</button>
+ <button onclick="shareScore()" class="share-button">🔗 Поделиться рекордом</button>
 
   <div id="game-over-overlay">Игра окончена</div>
   
@@ -207,8 +207,8 @@
     }
       // Функция для отправки рекорда в Telegram
   function shareScore() {
-  if (typeof TelegramGameProxy !== 'undefined') {
-    TelegramGameProxy.setScore(record); // вместо shareScore
+  if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+    Telegram.WebApp.sendData(JSON.stringify({ type: '2048', score: record }));
   } else {
     alert('Эта функция доступна только в Telegram!');
   }
