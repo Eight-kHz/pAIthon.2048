@@ -160,17 +160,349 @@
     }
 
     function drawGrid() {
-      const container = document.getElementById('game-container');
-      container.innerHTML = '';
-      grid.forEach(value => {
-        const tile = document.createElement('div');
-        tile.className = 'tile';
-        tile.setAttribute('data-value', value > 0 ? value : '');
-        tile.style.background = getTileColor(value);
-        tile.textContent = value > 0 ? value : ''; // <-- вот это добавь
-        container.appendChild(tile);
-      });
+  const container = document.getElementById('game-container');
+  container.innerHTML = ''; // Очищаем контейнер перед отрисовкой
+
+  grid.forEach(value => {
+    const tile = document.createElement('div');
+    
+    tile.className = 'tile';
+    tile.setAttribute('data-value', value > 0 ? value : ''); // Если значение 0, не отображаем его
+
+    // Фон ячейки: если значение 0, задаём фон, схожий с фоном игры
+    tile.style.background = value > 0 ? getTileColor(value) : '#3a3a3a'; // Фон для пустых ячеек, как фон игры
+
+    tile.textContent = value > 0 ? value : ''; // Если значение 0, текст пустой
+    container.appendChild(tile);
+  });
+}
+
+    function getTileColor(value) {
+      const colors = {
+        0: '#3a3a3a',
+        2: '#eee4da',
+        4: '#ede0c8',
+        8: '#f2b179',
+        16: '#f59563',
+        32: '#f67c5f',
+        64: '#f65e3b',
+        128: '#edcf72',
+        256: '#edcc61',
+        512: '#edc850',
+        1024: '#edc53f',
+        2048: '#edc22e',
+      };
+      return colors[value] || '#3c3a32';
     }
+
+    function addRandomTile() {
+      const empty = grid.map((v, i) => v === 0 ? i : -1).filter(i => i !== -1);
+      if (empty.length === 0) return;
+      const randIndex = empty[Math.floor(Math.random() * empty.length)];
+      grid[randIndex] = Math.random() < 0.9 ? 2 : 4;
+    }
+
+    function move(dir) {
+      const newGrid = Array(gridSize).fill().map(() => Array(gridSize).fill(0));
+      for (let i = 0; i < gridSize; i++) {
+        let row = [];
+        for (let j = 0; j < gridSize; j++) {
+          let val;
+          if (dir === 'left') val = grid[i * gridSize + j];
+          if (dir === 'right') val = grid[i * gridSize + (gridSize - 1 - j)];
+          if (dir === 'up') val = grid[j * gridSize + i];
+          if (dir === 'down') val = grid[(gridSize - 1 - j) * gridSize + i];
+          if (val !== 0) row.push(val);
+        }
+
+        for (let k = 0; k < row.length - 1; k++) {
+          if (row[k] === row[k + 1]) {
+            row[k] *= 2;
+            score += row[k];
+            row.splice(k + 1, 1);
+          }
+        }
+
+        while (row.length < gridSize) row.push(0);
+
+        for (let j = 0; j < gridSize; j++) {
+          let val = row[j];
+          if (dir === 'left') newGrid[i][j] = val;
+          if (dir === 'right') newGrid[i][gridSize - 1 - j] = val;
+          if (dir === 'up') newGrid[j][i] = val;
+          if (dir === 'down') newGrid[gridSize - 1 - j][i] = val;
+        }
+      }
+
+      grid = newGrid.flat();
+      addRandomTile();
+      updateScore();
+      drawGrid();
+    
+      if (isGameOver()) {
+        document.getElementById('game-over-overlay').style.display = 'block';
+      }
+    }
+    window.addEventListener('keydown', e => {
+      const keys = {
+        ArrowLeft: 'left',
+        ArrowRight: 'right',
+        ArrowUp: 'up',
+        ArrowDown: 'down'
+      };
+      if (keys[e.key]) {
+        move(keys[e.key]);
+      }
+    });
+
+    // Touch support
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    window.addEventListener('touchstart', e => {
+      const touch = e.touches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+    });
+    
+    window.addEventListener('touchend', e => {
+      const touch = e.changedTouches[0];
+      const dx = touch.clientX - touchStartX;
+      const dy = touch.clientY - touchStartY;
+    
+      // Игнорируем тап, если расстояние слишком маленькое
+      if (Math.abs(dx) < minSwipeDistance && Math.abs(dy) < minSwipeDistance) return;
+    
+      if (Math.abs(dx) > Math.abs(dy)) {
+        move(dx > 0 ? 'right' : 'left');
+      } else {
+        move(dy > 0 ? 'down' : 'up');
+      }
+    });
+    
+    let mouseStartX = 0;
+    let mouseStartY = 0;
+    let isDragging = false;
+    
+    const minSwipeDistance = 10; // Минимальное расстояние для свайпа
+    
+    window.addEventListener('mousedown', e => {
+      mouseStartX = e.clientX;
+      mouseStartY = e.clientY;
+      isDragging = false;  // Обнуляем флаг
+    });
+    
+    window.addEventListener('mousemove', e => {
+      if (isDragging) return;  // Если уже перетаскиваем, не обрабатываем события
+      const dx = e.clientX - mouseStartX;
+      const dy = e.clientY - mouseStartY;
+    
+      // Если перемещение достаточно велико, устанавливаем флаг
+      if (Math.abs(dx) > minSwipeDistance || Math.abs(dy) > minSwipeDistance) {
+        isDragging = true;
+      }
+    });
+    
+    window.addEventListener('mouseup', e => {
+      if (!isDragging) return; // Если свайп не был выполнен, не обрабатываем
+      const dx = e.clientX - mouseStartX;
+      const dy = e.clientY - mouseStartY;
+    
+      // Игнорируем тап, если расстояние слишком маленькое
+      if (Math.abs(dx) < minSwipeDistance && Math.abs(dy) < minSwipeDistance) return;
+    
+      if (Math.abs(dx) > Math.abs(dy)) {
+        move(dx > 0 ? 'right' : 'left');
+      } else {
+        move(dy > 0 ? 'down' : 'up');
+      }
+    
+      isDragging = false;
+    });
+
+    init();
+  </script>
+  <div id="game-over-overlay">Игра окончена</div>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Игра 2048 в Telegram</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #000;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+      padding: 1rem;
+    }
+    h1 {
+      margin-bottom: 1rem;
+      font-size: 2rem;
+      color: #fff;
+    }
+    #game-container {
+      background: #222;
+      padding: 1rem;
+      border-radius: 10px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: 10px;
+      max-width: 350px;  /* Максимальная ширина */
+      width: 100%;
+      height: auto;
+    }
+
+    .tile {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      height: auto;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #333;
+      border-radius: 8px;
+      box-sizing: border-box;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
+    }
+    
+    .tile[data-value="2"],
+    .tile[data-value="4"] {
+      color: #333;
+    }
+    .tile[data-value="8"],
+    .tile[data-value="16"],
+    .tile[data-value="32"],
+    .tile[data-value="64"] {
+      color: #fff;
+    }
+    .tile[data-value="128"],
+    .tile[data-value="256"],
+    .tile[data-value="512"],
+    .tile[data-value="1024"],
+    .tile[data-value="2048"] {
+      color: #fff;
+    }
+    .tile-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .score {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      color: #ccc;
+    }
+      button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      background: #444;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #666;
+    }
+    #game-over-overlay {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      font-size: 2rem;
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      display: none;
+      z-index: 10;
+      pointer-events: none;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>2048</h1>
+  <div class="score">Счёт: <span id="score">0</span></div>
+  <div id="game-container"></div>
+  
+  <button onclick="init()" style="margin-top: 1rem;">Новая игра</button>
+  
+  <script>
+    const gridSize = 4;
+    let grid = [];
+    let score = 0;
+
+    function init() {
+      document.getElementById('game-over-overlay').style.display = 'none';
+      grid = Array(gridSize * gridSize).fill(0);
+      score = 0;
+      updateScore();
+      addRandomTile();
+      addRandomTile();
+      drawGrid();
+    }
+    function isGameOver() {
+      return !grid.includes(0) && !canMerge();
+    }
+    
+    function canMerge() {
+      for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+          const current = grid[i * gridSize + j];
+          const right = j < gridSize - 1 ? grid[i * gridSize + j + 1] : 0;
+          const down = i < gridSize - 1 ? grid[(i + 1) * gridSize + j] : 0;
+          if (current === right || current === down) return true;
+        }
+      }
+      return false;
+    }
+    
+    function updateScore() {
+      document.getElementById('score').textContent = score;
+    }
+
+    function drawGrid() {
+  const container = document.getElementById('game-container');
+  container.innerHTML = ''; // Очищаем контейнер перед отрисовкой
+
+  grid.forEach(value => {
+    const tile = document.createElement('div');
+    
+    tile.className = 'tile';
+    tile.setAttribute('data-value', value > 0 ? value : ''); // Если значение 0, не отображаем его
+
+    // Фон ячейки: если значение 0, задаём фон, схожий с фоном игры
+    tile.style.background = value > 0 ? getTileColor(value) : '#3a3a3a'; // Фон для пустых ячеек, как фон игры
+
+    tile.textContent = value > 0 ? value : ''; // Если значение 0, текст пустой
+    container.appendChild(tile);
+  });
+}
 
     function getTileColor(value) {
       const colors = {
