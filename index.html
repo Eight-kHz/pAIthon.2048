@@ -157,6 +157,28 @@
       pointer-events: none;
       text-align: center;
     }
+    .share-button {
+    width: 100%;
+    max-width: 350px;
+    height: 60px;
+    background-color: #444;
+    color: white;
+    font-size: 1.2rem; /* Уменьшен размер шрифта */
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease;
+    margin-top: 1rem;
+  }
+
+  .share-button:hover {
+    background-color: #666;
+  }
+    
   </style>
 </head>
 <body>
@@ -169,6 +191,10 @@
   
   <button onclick="init()" class="restart-button"></button>
 
+<!-- Подключаем библиотеку для работы с играми Telegram -->
+<script src="https://telegram.org/js/games.js"></script>
+
+<button onclick="shareScore()" class="share-button">Поделиться рекордом</button>
 
   
   <script>
@@ -189,7 +215,26 @@
     function isGameOver() {
       return !grid.includes(0) && !canMerge();
     }
-    
+      // Функция для отправки рекорда в Telegram
+  function shareScore() {
+    // Проверяем, доступна ли библиотека для использования
+    if (typeof TelegramGameProxy !== 'undefined') {
+      TelegramGameProxy.shareScore(); // Отправляем рекорд в Telegram
+    } else {
+      alert('Эта функция доступна только в Telegram!');
+    }
+  }
+
+  // Функция обновления рекорда
+  function updateScore() {
+    document.getElementById('score').textContent = score; // Обновление текущего счёта
+    if (score > record) {
+      record = score;
+      localStorage.setItem('record', record); // Сохраняем рекорд в localStorage
+      console.log("Новый рекорд:", record); // Логируем новый рекорд в консоль
+      document.getElementById('record').textContent = record; // Обновление рекорда на экране
+    }  
+  }
     function canMerge() {
       for (let i = 0; i < gridSize; i++) {
         for (let j = 0; j < gridSize; j++) {
@@ -202,15 +247,6 @@
       return false;
     }
     
-   function updateScore() {
-  document.getElementById('score').textContent = score; // Обновление текущего счёта
-  if (score > record) {
-    record = score;
-    localStorage.setItem('record', record); // Сохраняем рекорд в localStorage
-    console.log("Новый рекорд:", record); // Логируем новый рекорд в консоль
-    document.getElementById('record').textContent = record; // Обновление рекорда на экране
-  }  
-}
 
 
     function drawGrid() {
