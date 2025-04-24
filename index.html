@@ -217,7 +217,7 @@
         m_id: m_id
       };
         
-      return { user, m_id, record };
+      return { user, m_id, record, payload: { type: "2048", score: record, user: user, m_id: m_id } };
     }
       
     function isGameOver() {
@@ -237,7 +237,7 @@
         })
         .then(response => response.json())
         .then(data => {
-          if (data.success) {
+          if (data.success === true) {
             console.log("Ответ сервера:", data);
             alert("Рекорд успешно отправлен на сервер!");
           } else {
@@ -264,7 +264,7 @@
         })
         .then(response => response.json())
         .then(data => {
-          if (data.success) {
+          if (data.success === true) {
             console.log("Ответ сервера:", data);
             alert("Рекорд успешно отправлен на сервер!");
           } else {
