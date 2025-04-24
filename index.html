@@ -183,7 +183,7 @@
 <!-- Подключаем библиотеку для работы с играми Telegram -->
 <script src="https://telegram.org/js/games.js"></script>
 
- <!-- <button onclick="shareScore()" class="share-button">🔗 Поделиться рекордом</button> -->
+ <button onclick="shareScore()" class="share-button">🔗 Поделиться рекордом</button>
 
   <div id="game-over-overlay">Игра окончена</div>
   
@@ -203,25 +203,69 @@
       addRandomTile();
       drawGrid();
     }
-
+      
+    function getParamsFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const user = decodeURIComponent(atob(urlParams.get('user')));
+      const m_id = decodeURIComponent(atob(urlParams.get('m_id')));
+      const record = parseInt(decodeURIComponent(atob(urlParams.get('record'))), 10);
+      
+      // Подготовка данных для отправки на сервер
+      const payload = {
+        type: "2048",
+        score: record,
+        user: user,
+        m_id: m_id
+      };
+        
+      return { user, m_id, record };
+    }
+      
     function isGameOver() {
       return !grid.includes(0) && !canMerge();
     }
+    
+    function sendScoreToBot() {
+    
+      // Отправка данных на сервер через POST-запрос
+      fetch('https://mygame2048.loca.lt/game_score', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Ответ сервера:", data);
+        alert("Рекорд успешно отправлен на сервер!");
+      })
+      .catch((error) => {
+        console.error("Ошибка при отправке рекорда:", error);
+        alert("Не удалось отправить рекорд на сервер.");
+      });
+    }
       // Функция для отправки рекорда в Telegram
     function shareScore() {
-    console.log("Нажата кнопка «Поделиться»");
-    console.log("Telegram объект:", window.Telegram);
-  
-    if (typeof window.Telegram !== 'undefined' && window.Telegram.WebApp) {
-      Telegram.WebApp.ready();
-      const payload = JSON.stringify({type: "2048", score: record});
-      Telegram.WebApp.sendData(payload);
-      console.log("Данные отправлены:", payload);
-    } else {
-      console.warn("Telegram WebApp не найден");
-      alert("Открой игру через Telegram, чтобы поделиться рекордом!");
+      console.log("Нажата кнопка «Поделиться»");
+      // Отправка данных на сервер через POST-запрос
+      fetch('https://mygame2048.loca.lt/game_score', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Ответ сервера:", data);
+        alert("Рекорд успешно отправлен на сервер!");
+      })
+      .catch((error) => {
+        console.error("Ошибка при отправке рекорда:", error);
+        alert("Не удалось отправить рекорд на сервер.");
+      });
     }
-  }
   function updateFontSize() {
   const scoreElement = document.getElementById('score');
   const recordElement = document.getElementById('record');
@@ -265,12 +309,6 @@
         }
       }
       return false;
-    }
-    
-    function sendScoreToBot() {
-      if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
-        Telegram.WebApp.sendData(JSON.stringify({ type: '2048', score: record }));
-      }
     }
 
     function drawGrid() {
@@ -474,13 +512,14 @@ function mergeRow(row) {
     });
 
     window.onload = () => {
-      if (window.Telegram && window.Telegram.WebApp) {
-        window.Telegram.WebApp.ready();  // Убедитесь, что WebApp готов
-      }
-    
+      const { user, m_id, record } = getParamsFromURL();
       // Инициализация вашей игры
       init(); 
       updateFontSize();
+      if (record > 0) {
+        document.getElementById('record').textContent = record;
+      }
+    };
     };
     document.querySelector('.restart-button').addEventListener('click', init);
 
