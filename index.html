@@ -88,6 +88,34 @@
       font-size: 1.2rem;
       color: #ccc;
     }
+    .restart-button {
+  width: 100%; /* Ширина кнопки равна ширине игрового поля */
+  max-width: 350px; /* Максимальная ширина кнопки, соответствующая ширине поля */
+  height: 60px; /* Увеличена высота кнопки для удобства */
+  background-color: #444;
+  color: white;
+  font-size: 2rem; /* Увеличен размер стрелки */
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem;
+}
+
+.restart-button::before {
+  content: '⟳'; /* Стрелка */
+  color: white;
+  font-size: 2rem; /* Увеличен размер стрелки */
+}
+
+.restart-button:hover {
+  background-color: #666; /* Эффект наведения */
+}
+
       button {
       margin-top: 1rem;
       padding: 0.5rem 1rem;
@@ -123,7 +151,9 @@
   <div class="score">Счёт: <span id="score">0</span></div>
   <div id="game-container"></div>
   
-  <button onclick="init()" style="margin-top: 1rem;">Новая игра</button>
+  <button onclick="init()" class="restart-button"></button>
+
+
   
   <script>
     const gridSize = 4;
