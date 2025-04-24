@@ -201,13 +201,13 @@
     const gridSize = 4;
     let grid = [];
     let score = 0;
-    let record = localStorage.getItem('record') ? parseInt(localStorage.getItem('record')) : 0;
+    let record = 0;
 
     function init() {
       document.getElementById('game-over-overlay').style.display = 'none';
       grid = Array(gridSize * gridSize).fill(0);
       score = 0;
-      document.getElementById('record').textContent = record; // <--- вот эта строка
+      document.getElementById('record').textContent = record;
       updateScore();
       addRandomTile();
       addRandomTile();
@@ -229,14 +229,20 @@
 
   // Функция обновления рекорда
   function updateScore() {
-    document.getElementById('score').textContent = score; // Обновление текущего счёта
-    if (score > record) {
-      record = score;
-      localStorage.setItem('record', record); // Сохраняем рекорд в localStorage
-      console.log("Новый рекорд:", record); // Логируем новый рекорд в консоль
-      document.getElementById('record').textContent = record; // Обновление рекорда на экране
-    }  
+  document.getElementById('score').textContent = score;
+
+  // Загружаем рекорд из localStorage только при первом вызове
+  if (record === 0 && localStorage.getItem('record')) {
+    record = parseInt(localStorage.getItem('record'));
   }
+
+  if (score > record) {
+    record = score;
+    localStorage.setItem('record', record);
+  }
+
+  document.getElementById('record').textContent = record;
+}
     function canMerge() {
       for (let i = 0; i < gridSize; i++) {
         for (let j = 0; j < gridSize; j++) {
@@ -413,7 +419,6 @@
     });
 
     window.onload = () => {
-      document.getElementById('record').textContent = record;
       init();
     };
     document.querySelector('.restart-button').addEventListener('click', init);
