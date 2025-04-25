@@ -197,12 +197,6 @@
     document.getElementById('game-over-overlay').style.display = 'none';
     grid = Array(gridSize * gridSize).fill(0);
     score = 0;
-
-    // Load the record from URL or use default value
-    const { record: savedRecord } = getParamsFromURL();
-    record = savedRecord || 0;
-
-    document.getElementById('record').textContent = record;
     updateScore();
     addRandomTile();
     addRandomTile();
@@ -248,6 +242,10 @@
     
     function sendScoreToBot() {
   const { user, m_id } = getParamsFromURL();
+  if (m_id === "0000") {
+    alert("Рекорд не был сохранен, зайдите через Телеграм");
+    return;
+  }
   const payload = {
     type: "2048",
     score: record, // <-- текущий рекорд из переменной
