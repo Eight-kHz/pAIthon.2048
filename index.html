@@ -215,19 +215,28 @@
     function getParamsFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
     const encodedData = urlParams.get('data');
-    const jsonString = atob(encodedData);
-    const data = JSON.parse(jsonString);
-    const user = data.u;
-    const m_id = data.m;
-    const record = data.r;
-    const payload = {
-        type: "2048",
-        score: record,
-        user: user,
-        m_id: m_id
-    };
+    if (!encodedData) {
+        console.error("No data found in URL!");
+        return;
+    }
     
-    return { user, m_id, record, payload };
+    try {
+        const jsonString = atob(encodedData);  // Декодируем из base64
+        const data = JSON.parse(jsonString);  // Преобразуем в объект
+        const user = data.u;
+        const m_id = data.m;
+        const record = data.r;
+        const payload = {
+            type: "2048",
+            score: record,
+            user: user,
+            m_id: m_id
+        };
+        
+        return { user, m_id, record, payload };
+    } catch (error) {
+        console.error("Error parsing JSON from URL:", error);
+    }
 }
       
     function isGameOver() {
