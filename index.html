@@ -214,9 +214,12 @@
       
     function getParamsFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
-    const user = decodeURIComponent(atob(urlParams.get('user')));
-    const m_id = decodeURIComponent(atob(urlParams.get('m_id')));
-    const record = parseInt(decodeURIComponent(atob(urlParams.get('record'))), 10);
+    const encodedData = urlParams.get('data');
+    const jsonString = atob(encodedData);
+    const data = JSON.parse(jsonString);
+    const user = data.u;
+    const m_id = data.m;
+    const record = data.r;
     const payload = {
         type: "2048",
         score: record,
