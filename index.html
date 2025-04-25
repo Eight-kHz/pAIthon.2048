@@ -217,9 +217,6 @@
     const user = decodeURIComponent(atob(urlParams.get('user')));
     const m_id = decodeURIComponent(atob(urlParams.get('m_id')));
     const record = parseInt(decodeURIComponent(atob(urlParams.get('record'))), 10);
-
-    console.log(user, m_id, record);
-
     const payload = {
         type: "2048",
         score: record,
@@ -227,7 +224,6 @@
         m_id: m_id
     };
     
-    console.log(payload); // Check the payload before sending it
     return { user, m_id, record, payload };
 }
       
@@ -243,7 +239,8 @@
     user,
     m_id
   };
-
+    console.log(user, m_id, record);
+    console.log(payload);
   fetch('https://mygame2048.loca.lt/game_score', {
     method: 'POST',
     headers: {
@@ -516,6 +513,8 @@ function mergeRow(row) {
         document.getElementById('record').textContent = record;
       }
     };
+    console.log(user, m_id, record);
+    console.log(payload);
   document.querySelector('.restart-button').addEventListener('click', init);
   document.getElementById('game-over-overlay').addEventListener('click', () => {
   document.getElementById('game-over-overlay').style.display = 'none'; // Закрытие оверлея
