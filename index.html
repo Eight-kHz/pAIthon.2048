@@ -191,17 +191,26 @@
     let grid = [];
     let score = 0;
     let record = 0;
-
+    let initialRecordLoaded = false;
+      
     function init() {
-      document.getElementById('game-over-overlay').style.display = 'none';
-      grid = Array(gridSize * gridSize).fill(0);
-      score = 0;
-      document.getElementById('record').textContent = record;
-      updateScore();
-      addRandomTile();
-      addRandomTile();
-      drawGrid();
-    }
+  document.getElementById('game-over-overlay').style.display = 'none';
+  grid = Array(gridSize * gridSize).fill(0);
+  score = 0;
+
+  // Загружаем рекорд только при первом запуске страницы
+  if (!initialRecordLoaded) {
+    const { record: savedRecord } = getParamsFromURL();
+    record = savedRecord || 0;
+    initialRecordLoaded = true;
+  }
+
+  document.getElementById('record').textContent = record;
+  updateScore();
+  addRandomTile();
+  addRandomTile();
+  drawGrid();
+}
       
     function getParamsFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -227,61 +236,32 @@
     }
     
     function sendScoreToBot() {
-    
-      const { user, m_id, record, payload } = getParamsFromURL();
-      // Отправка данных на сервер через POST-запрос
-      fetch('https://mygame2048.loca.lt/game_score', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-            mode: 'cors',  // изменено на 'cors'
-        })
-        .then(response => response.json())  // теперь можно работать с JSON
-        .then(data => {
-            console.log("Server response:", data);  // логируем ответ от сервера
-            if (data.success) {
-                alert("Рекорд успешно отправлен на сервер!");
-            } else {
-                console.error("Ошибка при отправке рекорда:", data);
-                alert("Ошибка при отправке рекорда на сервер.");
-            }
-        })
-        .catch((error) => {
-            console.error("Ошибка при отправке рекорда:", error);
-            alert("Не удалось отправить рекорд на сервер.");
-        });
-    }
-      // Функция для отправки рекорда в Telegram
-    function shareScore() {
-      console.log("Нажата кнопка «Поделиться»");
-      const { user, m_id, record, payload } = getParamsFromURL();
-      // Отправка данных на сервер через POST-запрос
-      fetch('https://mygame2048.loca.lt/game_score', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-            mode: 'cors',  // изменено на 'cors'
-        })
-        .then(response => response.json())  // теперь можно работать с JSON
-        .then(data => {
-            console.log("Server response:", data);  // логируем ответ от сервера
-            if (data.success) {
-                alert("Рекорд успешно отправлен на сервер!");
-            } else {
-                console.error("Ошибка при отправке рекорда:", data);
-                alert("Ошибка при отправке рекорда на сервер.");
-            }
-        })
-        .catch((error) => {
-            console.error("Ошибка при отправке рекорда:", error);
-            alert("Не удалось отправить рекорд на сервер.");
-        });
-    }
-      
+  const { user, m_id } = getParamsFromURL();
+  const payload = {
+    type: "2048",
+    score: record, // <-- текущий рекорд из переменной
+    user,
+    m_id
+  };
+
+  fetch('https://mygame2048.loca.lt/game_score', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+    mode: 'cors',
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log("Server response:", data);
+      alert(data.success ? "Рекорд успешно отправлен на сервер!" : "Ошибка при отправке рекорда на сервер.");
+    })
+    .catch((error) => {
+      console.error("Ошибка при отправке рекорда:", error);
+      alert("Не удалось отправить рекорд на сервер.");
+    });
+}
       
   function updateFontSize() {
   const scoreElement = document.getElementById('score');
@@ -532,18 +512,16 @@ function mergeRow(row) {
       init(); 
       updateFontSize();
       const { user, m_id, record, payload } = getParamsFromURL();
-      // Инициализация вашей игры
       if (record > 0) {
         document.getElementById('record').textContent = record;
       }
     };
-    document.querySelector('.restart-button').addEventListener('click', init);
-
+  document.querySelector('.restart-button').addEventListener('click', init);
   document.getElementById('game-over-overlay').addEventListener('click', () => {
   document.getElementById('game-over-overlay').style.display = 'none'; // Закрытие оверлея
   init(); // Перезапуск игры
 });
   </script>
- <button onclick="shareScore()" class="share-button">🔗 Поделиться рекордом</button>
+ <button onclick="sendScoreToBot()" class="share-button">🔗 Поделиться рекордом</button>
 </body>
 </html>
