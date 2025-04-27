@@ -41,7 +41,22 @@
       width: 100%;
       height: auto;
     }
-
+    #popup-message {
+      position: fixed;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -60%);
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 1rem 2rem;
+      border-radius: 20px;
+      font-size: 1.2rem;
+      text-align: center;
+      font-family: 'Segoe UI', sans-serif;
+      z-index: 999;
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
     .tile {
       position: relative;
       width: 100%;
@@ -182,7 +197,8 @@
 
 <!-- Подключаем библиотеку для работы с играми Telegram -->
 <script src="https://telegram.org/js/games.js"></script>
-
+    
+  <div id="popup-message" style="display:none;"></div>
 
   <div id="game-over-overlay">Игра окончена</div>
   
@@ -239,11 +255,32 @@
     function isGameOver() {
       return !grid.includes(0) && !canMerge();
     }
+      
+    function showPopup(message) {
+      const popup = document.getElementById('popup-message');
+      popup.textContent = message;
+      popup.style.display = 'flex';
+      popup.style.opacity = '0';
+      popup.style.transform = 'translate(-50%, -60%)';
+      
+      setTimeout(() => {
+        popup.style.opacity = '1';
+        popup.style.transform = 'translate(-50%, -50%)';
+      }, 10);
     
+      setTimeout(() => {
+        popup.style.opacity = '0';
+        popup.style.transform = 'translate(-50%, -60%)';
+        setTimeout(() => {
+          popup.style.display = 'none';
+        }, 300);
+      }, 2500); // сколько времени держать попап (2.5 сек)
+    }
+      
     function sendScoreToBot() {
   const { user, m_id } = getParamsFromURL();
   if (m_id === "0000") {
-    alert("Рекорд не был сохранен, зайдите через Телеграм");
+    showPopup("Рекорд не был сохранен, зайдите через Телеграм");
     return;
   }
   const payload = {
@@ -265,11 +302,11 @@
     .then(response => response.json())
     .then(data => {
       console.log("Server response:", data);
-      alert(data.success ? "Рекорд успешно отправлен на сервер!" : "Ошибка при отправке рекорда на сервер.");
+      showPopup(data.success ? "Рекорд успешно отправлен на сервер!" : "Ошибка при отправке рекорда на сервер.");
     })
     .catch((error) => {
       console.error("Ошибка при отправке рекорда:", error);
-      alert("Не удалось отправить рекорд на сервер.");
+      showPopup("Не удалось отправить рекорд на сервер.");
     });
 }
       
