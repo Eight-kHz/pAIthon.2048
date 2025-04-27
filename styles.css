@@ -1,29 +1,31 @@
 * {
-  margin: 0;
-  padding: 0;
-  box - sizing: border - box;
-  user - select: none!important;
-}
-body {
-  font - family: 'Segoe UI', sans - serif;
-  background: #000;
-      color: # fff;
-  display: flex;
-  flex - direction: column;
-  align - items: center;
-  justify - content: center;
-  min - height: 100 vh;
-  overflow: hidden;
-  padding: 1 rem;
-}
-h1 {
-  margin - bottom: 1 rem;
-  font - size: 2 rem;
-  color: #fff;
-}
-#
-game - container {
-    background: #222;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none !important;
+    }
+    
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #000;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+      padding: 1rem;
+    }
+    
+    h1 {
+      margin-bottom: 1rem;
+      font-size: 2rem;
+      color: #fff;
+    }
+    
+    #game-container {
+      background: #222;
       padding: 1rem;
       border-radius: 10px;
       display: grid;
@@ -34,30 +36,30 @@ game - container {
       height: auto;
     }
     
-    # popup - message {
+    #popup-message {
       position: fixed;
-      top: 40 % ;
-      left: 50 % ;
-      transform: translate(-50 % , -60 % );
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -60%);
       background: rgba(0, 0, 0, 0.8);
       color: #fff;
-      padding: 1 rem 2 rem;
-      border - radius: 20 px;
-      font - size: 1.2 rem;
-      text - align: center;
-      font - family: 'Segoe UI',
-      sans - serif;
-      z - index: 999;
-      transition: all 0.3 s ease;
-      pointer - events: none;
+      padding: 1rem 2rem;
+      border-radius: 20px;
+      font-size: 1.2rem;
+      text-align: center;
+      font-family: 'Segoe UI', sans-serif;
+      z-index: 999;
+      transition: all 0.3s ease;
+      pointer-events: none;
     }
-      .tile {
+    
+    .tile {
       position: relative;
-      width: 100 % ;
-      aspect - ratio: 1 / 1;
+      width: 100%;
+      aspect-ratio: 1 / 1;
       height: auto;
-      font - size: 2 rem;
-      font - weight: bold;
+      font-size: 2rem;
+      font-weight: bold;
       color: #333;
       border-radius: 8px;
       box-sizing: border-box;
@@ -68,52 +70,55 @@ game - container {
       transition: background 0.2s, color 0.2s;
     }
     
-    .tile[data-value= "2"],
-    .tile[data - value = "4"] {
+    .tile[data-value="2"],
+    .tile[data-value="4"] {
       color: #333;
     }
     
-    .tile[data-value= "8"],
-    .tile[data - value = "16"],
-    .tile[data - value = "32"],
-    .tile[data - value = "64"] {
+    .tile[data-value="8"],
+    .tile[data-value="16"],
+    .tile[data-value="32"],
+    .tile[data-value="64"] {
       color: #fff;
     }
-    .tile[data - value = "128"],
-    .tile[data - value = "256"],
-    .tile[data - value = "512"],
-    .tile[data - value = "1024"],
-    .tile[data - value = "2048"] {
+    
+    .tile[data-value="128"],
+    .tile[data-value="256"],
+    .tile[data-value="512"],
+    .tile[data-value="1024"],
+    .tile[data-value="2048"] {
       color: #fff;
     }
-    .tile - content {
+    
+    .tile-content {
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
       display: flex;
-      align - items: center;
-      justify - content: center;
+      align-items: center;
+      justify-content: center;
     }
+    
     .score,
     .record {
-      margin: 0 1 rem;
-      font - size: 1.2 rem;
-      font - weight: bold;
-      font - family: 'Segoe UI',
-      sans - serif;
-      text - align: center;
-      white - space: nowrap;
+      margin: 0 1rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      white-space: nowrap;
       overflow: hidden;
       color: #ccc;
     }
-    .restart - button,
-    .share - button {
-      width: 100 % ;
-      max - width: 350 px;
-      height: 45 px;
-      background - color: #444;
+    
+    .restart-button,
+    .share-button {
+      width: 100%;
+      max-width: 350px;
+      height: 45px;
+      background-color: #444;
       color: white;
       font-size: 1.2rem;
       font-weight: bold;
@@ -138,49 +143,52 @@ game - container {
     
     .restart-button:hover,
     .share-button:hover {
-      background-color: # 666;
-    }
-    #
-    score - container {
-      display: flex;
-      justify - content: center;
-      width: 100 % ;
-      margin - bottom: 1 rem;
-    }
-    .score,
-    .record {
-      margin: 0 1 rem;
-      font - weight: bold;
-      text - align: center;
-      white - space: nowrap;
-      overflow: hidden;
-    }
-    button {
-      margin - top: 1 rem;
-      padding: 0.5 rem 1 rem;
-      font - size: 1 rem;
-      background: #444;
-      color: # fff;
-      border: none;
-      border - radius: 5 px;
-      cursor: pointer;
-    }
-    button: hover {
-        background: #666;
+      background-color: #666;
     }
     
-    # game - over - overlay {
-          position: fixed;
-          top: 50 % ;
-          left: 50 % ;
-          transform: translate(-50 % , -50 % );
-          background: rgba(0, 0, 0, 0.7);
-          color: #fff;
-          font - size: 1.5 rem;
-          padding: 1 rem 2 rem;
-          border - radius: 50 px;
-          display: none;
-          z - index: 10;
-          pointer - events: auto;
-          text - align: center;
-        }
+    #score-container {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    
+    .score,
+    .record {
+      margin: 0 1rem;
+      font-weight: bold;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    
+    button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      background: #444;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    
+    button:hover {
+      background: #666;
+    }
+    
+    #game-over-overlay {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      font-size: 1.5rem;
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      display: none;
+      z-index: 10;
+      pointer-events: auto;
+      text-align: center;
+    }
