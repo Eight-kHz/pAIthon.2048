@@ -212,13 +212,14 @@
     <div class="record">Рекорд: <span id="record">0</span></div>
   </div>
   <div id="game-container"></div>
-  <button onclick="init()" class="restart-button"></button>
-  <script src="https://telegram.org/js/games.js"></script>
-  <div id="popup-message" style="display:none;"></div>
-  <div id="game-over-overlay">Игра окончена</div>
+  <button onclick="init()" class="restart-button" aria-label="Перезапустить игру"></button>
+  <button onclick="sendScoreToBot()" class="share-button" aria-label="Сохранить рекорд">🔗 Сохранить рекорд</button>
 
+  <div id="popup-message" style="display:none;" role="alert"></div>
+  <div id="game-over-overlay" role="alert">Игра окончена</div>
+
+  <script src="https://telegram.org/js/games.js"></script>
   <script src="gmin.js"></script>
-  <button onclick="sendScoreToBot()" class="share-button">🔗 Сохранить рекорд</button>
 </body>
 
 </html>
