@@ -2,6 +2,9 @@ const gridSize = 4;
 let grid = [];
 let score = 0;
 let record = 0;
+let user = "Unknown";
+let m_id = "0000";
+let payload = {};
 
 function init() {
   document.getElementById('game-over-overlay').style.display = 'none';
@@ -16,9 +19,6 @@ function init() {
 function getParamsFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
   const encodedData = urlParams.get('r');
-  let user = 'Unknown';
-  let m_id = '0000';
-  let record = 0;
   if (!encodedData) {
     console.error("No data found in URL! Starting game with default values.");
   } else {
@@ -32,17 +32,16 @@ function getParamsFromURL() {
       console.error("Error parsing JSON from URL:", error);
     }
   }
-  const payload = {
-    type: "2048",
-    score: record,
-    user: user,
-    m_id: m_id
-  };
   return {
     user,
     m_id,
     record,
-    payload
+    payload: {
+      type: "2048",
+      score: record,
+      user: user,
+      m_id: m_id
+    }
   };
 }
 
@@ -70,22 +69,11 @@ function showPopup(message) {
 }
 
 function sendScoreToBot() {
-  const {
-    user,
-    m_id
-  } = getParamsFromURL();
   if (m_id === "0000") {
     showPopup("⚠️ Рекорд не сохранён, зайди через Телеграм!");
     return;
   }
-  const payload = {
-    type: "2048",
-    score: record,
-    user,
-    m_id
-  };
-  console.log(user, m_id, record);
-  console.log(payload);
+  payload.score = record;
   fetch('https://mygame2048.loca.lt/game_score', {
       method: 'POST',
       headers: {
@@ -301,32 +289,21 @@ window.addEventListener('mouseup', e => {
   }
   isDragging = false;
 });
-window.onload = () => {
+window.addEventListener('load', () => {
+  const urlData = getParamsFromURL();
+  user = urlData.user;
+  m_id = urlData.m_id;
+  record = urlData.record;
+  payload = urlData.payload;
   init();
   updateFontSize();
-  const {
-    user,
-    m_id,
-    record,
-    payload
-  } = getParamsFromURL();
-  console.log(user, m_id, record);
-  console.log(payload);
   if (record > 0) {
     document.getElementById('record').textContent = record;
   }
+  console.log(payload);
   document.querySelector('.restart-button').addEventListener('click', init);
   document.getElementById('game-over-overlay').addEventListener('click', () => {
     document.getElementById('game-over-overlay').style.display = 'none';
     init();
   });
-};
-window.addEventListener('load', () => {
-  const {
-    user,
-    m_id,
-    record: initialRecord
-  } = getParamsFromURL();
-  record = initialRecord;
-  init();
 });
