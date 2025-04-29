@@ -2,10 +2,6 @@ const gridSize = 4;
 let grid = [];
 let score = 0;
 let record = 0;
-let initialRecordLoaded = false;
-
-document.getElementById('score').innerText = savedScore || 0;
-document.getElementById('record').innerText = savedRecord || 0;
 
 function init() {
   document.getElementById('game-over-overlay').style.display = 'none';
@@ -88,7 +84,6 @@ function sendScoreToBot() {
     user,
     m_id
   };
-  console.log(user, m_id, record);
   console.log(payload);
   fetch('https://mygame2048.loca.lt/game_score', {
       method: 'POST',
@@ -306,10 +301,8 @@ window.addEventListener('mouseup', e => {
   isDragging = false;
 });
 window.onload = () => {
-  const { user, m_id, record: urlRecord, payload } = getParamsFromURL();
-  console.log(user, m_id, urlRecord);
+  const { user, m_id, record, payload } = getParamsFromURL();
   console.log(payload);
-  record = urlRecord;
   init();
   updateFontSize();
   document.querySelector('.restart-button').addEventListener('click', init);
