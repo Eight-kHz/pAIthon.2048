@@ -33,6 +33,23 @@
       color: #fff;
     }
     
+    @keyframes pulse {
+      0%, 100% {
+        text-shadow:
+          0 0 5px #8B7500,
+          0 0 10px #DAA520,
+          0 0 15px #FFD700,
+          0 0 25px #FFEC8B;
+      }
+      50% {
+        text-shadow:
+          0 0 10px #B8860B,
+          0 0 15px #FFD700,
+          0 0 20px #FFFACD,
+          0 0 35px #FFFFE0;
+      }
+    }
+    
     #game-container {
       background: #222;
       padding: 1rem;
@@ -60,6 +77,26 @@
       z-index: 999;
       transition: all 0.3s ease;
       pointer-events: none;
+    }
+    
+    #congratulation-popup {
+      position: fixed;
+      top: 48%;
+      left: 50%;
+      transform: translate(-50%, -60%);
+      background: #FFD700DB;
+      color: #000;
+      padding: 1.0rem 1.5rem;
+      border-radius: 20px;
+      font-size: 1.0rem;
+      font-weight: bold;
+      font-family: 'Segoe UI', sans-serif;
+      z-index: 999;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.5s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
     }
     
     .tile {
@@ -176,7 +213,6 @@
     button:hover {
       background: #666;
     }
-    
     #game-over-overlay {
       position: fixed;
       top: 50%;
@@ -206,6 +242,7 @@
   <button onclick="sendScoreToBot()" class="share-button" aria-label="Сохранить рекорд">🔗 Сохранить рекорд</button>
 
   <div id="popup-message" style="display:none;" role="alert"></div>
+  <div id="congratulation-popup" role="alert"></div>
   <div id="game-over-overlay" role="alert">Игра окончена</div>
 
   <script src="https://telegram.org/js/games.js"></script>
@@ -217,6 +254,7 @@
     let user = 'None';
     let m_id = 'None';
     let payload = {};
+    let reached = false;
      
     function init() {
       document.getElementById('game-over-overlay').style.display = 'none';
@@ -349,12 +387,49 @@
       };
       return colors[value] || `hsl(${Math.log2(value) * 35 % 360}, 70%, 55%)`;
     }
+	
+    function checkreached() {
+		if (!reached) {
+		  if (grid.includes(8)) {
+  			reached = true;
+        const popup = document.getElementById('congratulation-popup');
+            popup.textContent = 'Поздравляю, ты прошел игру!';
+            popup.style.display = 'flex';
+            popup.style.opacity = '0';
+            popup.style.transform = 'translate(-50%, -60%) scale(0.9)';
+            setTimeout(() => {
+              popup.style.opacity = '1';
+              popup.style.transform = 'translate(-50%, -50%) scale(1)';
+            }, 10);
+            setTimeout(() => {
+              popup.style.opacity = '0';
+              popup.style.transform = 'translate(-50%, -60%) scale(0.9)';
+              setTimeout(() => {
+                popup.style.display = 'none';
+              }, 300);
+            }, 3000);
+        
+  			document.querySelector('h1').style = `
+  			  margin-bottom: 0.3rem;
+  			  font-size: 1.9rem;
+  			  font-family: sans-serif;
+  			  color: #FFD700;
+  			  text-shadow:
+  				0 0 5px #8B7500,
+  				0 0 10px #DAA520,
+  				0 0 15px #FFD700,
+  				0 0 25px #FFEC8B;
+  			  animation: pulse 2s infinite;`;
+  		  }
+      }
+    }
     
     function addRandomTile() {
       const emptyIndices = grid.reduce((acc, val, i) => val === 0 ? [...acc, i] : acc, []);
       if (!emptyIndices.length) return;
       const randIndex = emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
       grid[randIndex] = Math.random() < 0.9 ? 2 : 4;
+      checkreached();
     }
     
     function move(dir) {
@@ -492,5 +567,4 @@
     });
   </script>
 </body>
-
 </html>
