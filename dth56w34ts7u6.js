@@ -311,7 +311,6 @@ window.onload = () => {
     record,
     payload
   } = getParamsFromURL();
-  console.log(user, m_id, record);
   console.log(payload);
   if (record > 0) {
     document.getElementById('record').textContent = record;
@@ -322,12 +321,3 @@ window.onload = () => {
     init();
   });
 };
-window.addEventListener('load', () => {
-  const {
-    user,
-    m_id,
-    record: initialRecord
-  } = getParamsFromURL();
-  record = initialRecord;
-  init();
-});
