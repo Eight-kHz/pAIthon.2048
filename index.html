@@ -223,8 +223,8 @@
     let grid = [];
     let score = 0;
     let record = 0;
-    let user = "Unknown";
-    let m_id = "0";
+    let user = 0;
+    let m_id = 0;
     let payload = {};
      
     function init() {
@@ -290,7 +290,7 @@
     }
     
     function sendScoreToBot() {
-      if (m_id === "0") {
+      if (m_id === 0) {
         showPopup("⚠️ Рекорд не сохранён, зайди через Телеграм!");
         return;
       }
