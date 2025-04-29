@@ -482,7 +482,7 @@
       if (record > 0) {
         document.getElementById('record').textContent = record;
       }
-      console.log(User login:\ntype: '${payload.type}'\nuser: '${payload.user}'\nm_id: '${payload.m_id}');
+      console.log(`User login:\ntype: '${payload.type}'\nuser: '${payload.user}'\nm_id: '${payload.m_id}'`);
       document.querySelector('.restart-button').addEventListener('click', init);
       document.getElementById('game-over-overlay').addEventListener('click', () => {
         document.getElementById('game-over-overlay').style.display = 'none';
