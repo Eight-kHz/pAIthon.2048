@@ -4,6 +4,9 @@ let score = 0;
 let record = 0;
 let initialRecordLoaded = false;
 
+document.getElementById('score').innerText = savedScore || 0;
+document.getElementById('record').innerText = savedRecord || 0;
+
 function init() {
   document.getElementById('game-over-overlay').style.display = 'none';
   grid = Array(gridSize * gridSize).fill(0);
