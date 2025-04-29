@@ -260,6 +260,11 @@
       document.getElementById('game-over-overlay').style.display = 'none';
       grid = Array(gridSize * gridSize).fill(0);
       score = 0;
+	reached = false;
+	    document.querySelector('h1').style = `
+      margin-bottom: 0.2rem;
+      font-size: 1.8rem;
+      color: #fff;`;
       updateScore();
       addRandomTile();
       addRandomTile();
@@ -390,7 +395,7 @@
 	
     function checkreached() {
 		if (!reached) {
-		  if (grid.includes(8)) {
+		  if (grid.includes(2048)) {
   			reached = true;
         const popup = document.getElementById('congratulation-popup');
             popup.textContent = 'Поздравляю, ты прошел игру!';
