@@ -304,7 +304,6 @@ window.addEventListener('mouseup', e => {
   isDragging = false;
 });
 window.onload = () => {
-  init();
   updateFontSize();
   const {
     user,
@@ -321,4 +320,5 @@ window.onload = () => {
     document.getElementById('game-over-overlay').style.display = 'none';
     init();
   });
+  init();
 };
