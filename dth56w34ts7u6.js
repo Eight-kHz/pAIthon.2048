@@ -322,12 +322,3 @@ window.onload = () => {
     init();
   });
 };
-window.addEventListener('load', () => {
-  const {
-    user,
-    m_id,
-    record: initialRecord
-  } = getParamsFromURL();
-  record = initialRecord;
-  init();
-});
