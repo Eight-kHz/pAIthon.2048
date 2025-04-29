@@ -84,6 +84,7 @@ function sendScoreToBot() {
     user,
     m_id
   };
+  console.log(user, m_id, record);
   console.log(payload);
   fetch('https://mygame2048.loca.lt/game_score', {
       method: 'POST',
@@ -301,13 +302,31 @@ window.addEventListener('mouseup', e => {
   isDragging = false;
 });
 window.onload = () => {
-  const { user, m_id, record, payload } = getParamsFromURL();
-  console.log(payload);
   init();
   updateFontSize();
+  const {
+    user,
+    m_id,
+    record,
+    payload
+  } = getParamsFromURL();
+  console.log(user, m_id, record);
+  console.log(payload);
+  if (record > 0) {
+    document.getElementById('record').textContent = record;
+  }
   document.querySelector('.restart-button').addEventListener('click', init);
   document.getElementById('game-over-overlay').addEventListener('click', () => {
     document.getElementById('game-over-overlay').style.display = 'none';
     init();
   });
 };
+window.addEventListener('load', () => {
+  const {
+    user,
+    m_id,
+    record: initialRecord
+  } = getParamsFromURL();
+  record = initialRecord;
+  init();
+});
