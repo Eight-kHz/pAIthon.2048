@@ -162,15 +162,6 @@
       margin-bottom: 0.2rem;
     }
     
-    .score,
-    .record {
-      margin: 0 1rem;
-      font-weight: bold;
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-    
     button {
       margin-top: 1rem;
       padding: 0.5rem 1rem;
@@ -303,20 +294,15 @@
     }
     
     function updateFontSize() {
-      const scoreElement = document.getElementById('score');
-      const recordElement = document.getElementById('record');
-    
-      function adjustFontSize(element) {
-        const value = element.textContent;
+      const elements = [document.getElementById('score'), document.getElementById('record')];
+      elements.forEach(el => {
         let fontSize = 1.5;
-        element.style.fontSize = `${fontSize}rem`;
-        while (element.scrollWidth > maxWidth && fontSize > 0.5) {
+        el.style.fontSize = `${fontSize}rem`;
+        while (el.scrollWidth > el.clientWidth && fontSize > 0.5) {
           fontSize -= 0.05;
-          element.style.fontSize = `${fontSize.toFixed(2)}rem`;
+          el.style.fontSize = `${fontSize.toFixed(2)}rem`;
         }
-      }
-      adjustFontSize(scoreElement);
-      adjustFontSize(recordElement);
+      });
     }
     
     function updateScore() {
@@ -331,13 +317,12 @@
     }
     
     function canMerge() {
-      for (let i = 0; i < gridSize; i++) {
-        for (let j = 0; j < gridSize; j++) {
-          const current = grid[i * gridSize + j];
-          const right = j < gridSize - 1 ? grid[i * gridSize + j + 1] : 0;
-          const down = i < gridSize - 1 ? grid[(i + 1) * gridSize + j] : 0;
-          if ((right && current === right) || (down && current === down)) return true;
-        }
+      for (let i = 0; i < gridSize * gridSize; i++) {
+        const row = Math.floor(i / gridSize), col = i % gridSize;
+        const current = grid[i];
+        const right = col < gridSize - 1 ? grid[i + 1] : null;
+        const down = row < gridSize - 1 ? grid[i + gridSize] : null;
+        if (current === right || current === down) return true;
       }
       return false;
     }
@@ -377,9 +362,9 @@
     }
     
     function addRandomTile() {
-      const empty = grid.map((v, i) => v === 0 ? i : -1).filter(i => i !== -1);
-      if (empty.length === 0) return;
-      const randIndex = empty[Math.floor(Math.random() * empty.length)];
+      const emptyIndices = grid.reduce((acc, val, i) => val === 0 ? [...acc, i] : acc, []);
+      if (!emptyIndices.length) return;
+      const randIndex = emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
       grid[randIndex] = Math.random() < 0.9 ? 2 : 4;
     }
     
