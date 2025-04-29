@@ -19,7 +19,7 @@ function getParamsFromURL() {
   const encodedData = urlParams.get('r');
   let user = 'Unknown';
   let m_id = '0000';
-  let record = 0;
+  let urlRecord = 0;
   if (!encodedData) {
     console.error("No data found in URL! Starting game with default values.");
   } else {
@@ -28,11 +28,12 @@ function getParamsFromURL() {
       const data = JSON.parse(jsonString);
       user = data.u || user;
       m_id = data.m || m_id;
-      record = data.r || record;
+      urlRecord = data.r || 0;
     } catch (error) {
       console.error("Error parsing JSON from URL:", error);
     }
   }
+  record = urlRecord;
   const payload = {
     type: "2048",
     score: record,
@@ -313,7 +314,7 @@ window.onload = () => {
   } = getParamsFromURL();
   console.log(payload);
   if (record > 0) {
-    document.getElementById('record').textContent = record;
+    document.getEl= record;
   }
   document.querySelector('.restart-button').addEventListener('click', init);
   document.getElementById('game-over-overlay').addEventListener('click', () => {
