@@ -1,7 +1,6 @@
 const gridSize = 4;
 let grid = [];
 let score = 0;
-let record = 0;
 let initialRecordLoaded = false;
 
 function init() {
@@ -28,7 +27,7 @@ function getParamsFromURL() {
       const data = JSON.parse(jsonString);
       user = data.u || user;
       m_id = data.m || m_id;
-      record = data.r || record;
+      record = data.r || 0;
     } catch (error) {
       console.error("Error parsing JSON from URL:", error);
     }
