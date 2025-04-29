@@ -303,19 +303,12 @@ window.addEventListener('mouseup', e => {
   isDragging = false;
 });
 window.onload = () => {
+  const { user, m_id, record: urlRecord, payload } = getParamsFromURL();
+  console.log(user, m_id, urlRecord);
+  console.log(payload);
+  record = urlRecord;
   init();
   updateFontSize();
-  const {
-    user,
-    m_id,
-    record,
-    payload
-  } = getParamsFromURL();
-  console.log(user, m_id, record);
-  console.log(payload);
-  if (record > 0) {
-    document.getElementById('record').textContent = record;
-  }
   document.querySelector('.restart-button').addEventListener('click', init);
   document.getElementById('game-over-overlay').addEventListener('click', () => {
     document.getElementById('game-over-overlay').style.display = 'none';
