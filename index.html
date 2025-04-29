@@ -294,14 +294,20 @@
     }
     
     function updateFontSize() {
-      [score, record].forEach(id => {
-        const el = document.getElementById(id);
+      const scoreElement = document.getElementById('score');
+      const recordElement = document.getElementById('record');
+    
+      function adjustFontSize(element) {
+        const value = element.textContent;
         let fontSize = 1.5;
-        el.style.fontSize = `${fontSize}rem`;
-        while (el.scrollWidth > el.clientWidth && fontSize > 0.5) {
-          el.style.fontSize = `${(fontSize -= 0.05).toFixed(2)}rem`;
+        const maxWidth = element.offsetWidth;
+        while (element.scrollWidth > maxWidth && fontSize > 0.5) {
+          fontSize -= 0.1;
+          element.style.fontSize = `${fontSize}rem`;
         }
-      });
+      }
+      adjustFontSize(scoreElement);
+      adjustFontSize(recordElement);
     }
     
     function updateScore() {
