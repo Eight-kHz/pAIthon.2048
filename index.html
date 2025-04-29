@@ -294,13 +294,12 @@
     }
     
     function updateFontSize() {
-      const elements = [document.getElementById('score'), document.getElementById('record')];
-      elements.forEach(el => {
+      [score, record].forEach(id => {
+        const el = document.getElementById(id);
         let fontSize = 1.5;
-        el.style.fontSize = ${fontSize}rem;
+        el.style.fontSize = `${fontSize}rem`;
         while (el.scrollWidth > el.clientWidth && fontSize > 0.5) {
-          fontSize -= 0.05;
-          el.style.fontSize = ${fontSize.toFixed(2)}rem;
+          el.style.fontSize = `${(fontSize -= 0.05).toFixed(2)}rem`;
         }
       });
     }
