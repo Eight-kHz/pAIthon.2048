@@ -5,7 +5,7 @@ let record = 0;
 let user = "Unknown";
 let m_id = "0000";
 let payload = {};
-
+ 
 function init() {
   document.getElementById('game-over-overlay').style.display = 'none';
   grid = Array(gridSize * gridSize).fill(0);
