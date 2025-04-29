@@ -238,31 +238,19 @@
     }
     
     function getParamsFromURL() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const encodedData = urlParams.get('r');
-      if (!encodedData) {
-        console.error("No data found in URL! Starting game with default values.");
-      } else {
-        try {
-          const jsonString = atob(encodedData);
-          const data = JSON.parse(jsonString);
-          user = data.u || user;
-          m_id = data.m || m_id;
-          record = data.r || record;
-        } catch (error) {
-          console.error("Error parsing JSON from URL:", error);
-        }
+      try {
+        const encoded = new URLSearchParams(window.location.search).get('r');
+        if (!encoded) throw new Error("No data in URL");
+        const { u, m, r } = JSON.parse(atob(encoded));
+        user = u ?? user;
+        m_id = m ?? m_id;
+        record = r ?? record;
+      } catch (e) {
+        console.warn("URL data missing or invalid:", e.message);
       }
       return {
-        user,
-        m_id,
-        record,
-        payload: {
-          type: "2048",
-          score: record,
-          user: user,
-          m_id: m_id
-        }
+        user, m_id, record,
+        payload: { type: "2048", score: record, user, m_id }
       };
     }
     
@@ -321,10 +309,10 @@
       function adjustFontSize(element) {
         const value = element.textContent;
         let fontSize = 1.5;
-        const maxWidth = element.offsetWidth;
+        element.style.fontSize = `${fontSize}rem`;
         while (element.scrollWidth > maxWidth && fontSize > 0.5) {
-          fontSize -= 0.1;
-          element.style.fontSize = `${fontSize}rem`;
+          fontSize -= 0.05;
+          element.style.fontSize = `${fontSize.toFixed(2)}rem`;
         }
       }
       adjustFontSize(scoreElement);
@@ -348,7 +336,7 @@
           const current = grid[i * gridSize + j];
           const right = j < gridSize - 1 ? grid[i * gridSize + j + 1] : 0;
           const down = i < gridSize - 1 ? grid[(i + 1) * gridSize + j] : 0;
-          if (current === right || current === down) return true;
+          if ((right && current === right) || (down && current === down)) return true;
         }
       }
       return false;
