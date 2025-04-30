@@ -403,16 +403,13 @@
     Telegram.WebApp.ready();
   Telegram.WebApp.expand();
   function sendScoreToBot() {
-    if (typeof Telegram === 'undefined' || !Telegram.WebApp || m_id === 'None' || user === 'None') {
-      showPopup("⚠️ Рекорд не сохранён.<br>Зайди из Телеграм!");
-      return;
-    }
     const data = {
       score: record,
       user: user,
       message_id: m_id
     };
     Telegram.WebApp.sendData(JSON.stringify(data));
+      showPopup("✅ Рекорд сохранён!");
   }
    
    function showPopup(message) {
